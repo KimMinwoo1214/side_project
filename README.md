@@ -8,4 +8,4 @@ As part of this process, we plan to use sensors like LiDAR, which we’ve wanted
 
 ## [Products](https://github.com/KimMinwoo1214/side_project/tree/main/물품)
 
-## [Code](https://github.com/KimMinwoo1214/side_project/tree/main/Code)
+## [Code](https://github.com/KimMinwoo1214/side_project/tree/main/CODE)
