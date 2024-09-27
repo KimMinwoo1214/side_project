@@ -2,7 +2,7 @@ import serial
 import time
 
 # 시리얼 포트와 통신 속도 설정 (포트는 환경에 따라 다를 수 있음)
-ser = serial.Serial('COM3', 9600)  # COM 포트 번호는 사용 환경에 맞게 설정하세요
+ser = serial.Serial('COM6', 9600)  # COM 포트 번호는 사용 환경에 맞게 설정하세요
 time.sleep(2)  # 시리얼 통신 안정화를 위해 잠시 대기
 
 def send_command(dc_command, dc_speed, servo_angle):
@@ -29,13 +29,13 @@ while True:
             servo_angle = int(servo_input)  # 서보 모터 각도 값 추출 (숫자로 변환)
             
             if dc_command in ['G', 'B', 'S']:
-                if 30 <= dc_speed <= 250:
-                    if 0 <= servo_angle <= 180:
+                if 0 <= dc_speed <= 250:
+                    if 70 <= servo_angle <= 110:
                         send_command(dc_command, dc_speed, servo_angle)
                     else:
-                        print("서보 모터 각도는 0에서 180 사이의 값이어야 합니다.")
+                        print("서보 모터 각도는 70에서 110 사이의 값이어야 합니다.")
                 else:
-                    print("DC 모터 속도는 30에서 250 사이의 값이어야 합니다.")
+                    print("DC 모터 속도는 0에서 250 사이의 값이어야 합니다.")
             else:
                 print("잘못된 DC 모터 명령어입니다. G, B, S 중 하나를 입력하세요.")
         except ValueError:
