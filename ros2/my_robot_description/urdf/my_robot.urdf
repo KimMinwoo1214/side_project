@@ -1,0 +1,44 @@
+<robot name="my_robot">
+
+  <!-- Base Link -->
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 -0.06" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/meshes/Base.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.06" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/meshes/Base.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- YDLiDAR Link -->
+  <link name="lidar_link">
+    <visual>
+      <origin xyz="0 0 -0.024" rpy="0 0 0"/>  <!-- Base 위에 LiDAR 위치 -->
+      <geometry>
+        <mesh filename="package://my_robot_description/meshes/YDLiDAR.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.024" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://my_robot_description/meshes/YDLiDAR.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- Joint to connect Base and Lidar (Revolute) -->
+  <joint name="base_to_lidar" type="revolute">
+    <parent link="base_link"/>
+    <child link="lidar_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/> <!-- LiDAR가 Base 위에 고정 -->
+    <axis xyz="1 0 0"/>  <!-- X축을 기준으로 회전 -->
+    <limit effort="1.0" velocity="1.0" lower="-1.57" upper="1.57"/> <!-- 회전 범위 -90도에서 90도까지 -->
+  </joint>
+
+</robot>
