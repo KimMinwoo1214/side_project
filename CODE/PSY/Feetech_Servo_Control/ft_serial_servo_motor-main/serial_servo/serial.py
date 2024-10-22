@@ -6,11 +6,11 @@ class Serial_rw:
         baudrate_STS = 1000000
         self.ID = ID
         try:
-            port = "/dev/ttyUSB0"
+            port = "COM6"
             self.ser = serial.Serial(
                 port, baudrate=baudrate_STS, bytesize=8, parity='N', stopbits=1, timeout=0.05)
         except Exception:
-            port = "/dev/ttyUSB1"
+            port = "COM6"
             self.ser = serial.Serial(
                 port, baudrate=baudrate_STS, bytesize=8, parity='N', stopbits=1, timeout=0.05)
 
