@@ -1,0 +1,130 @@
+import struct
+import math
+import RPi.GPIO as GPIO
+import time
+
+def parse_lidar_data(data):
+    # 데이터를 적절히 슬라이싱하고 파싱합니다
+    header = data[:10]  # 예시로 헤더 추출
+    payload = data[10:]  # 나머지 데이터를 페이로드로 설정
+
+    distances = []
+    for i in range(0, len(payload), 5):  # 각 데이터는 5바이트라고 가정
+        if i + 5 <= len(payload):
+            point_data = payload[i:i+5]
+            distance, intensity = struct.unpack('<H', point_data[:2])[0], point_data[2]
+            distances.append((distance, intensity))
+
+    return distances
+
+def convert_to_cartesian(distances):
+    cartesian_points = []
+    angle_increment = 1.0  # 각 데이터 포인트 간의 각도 증가 값 (도 단위)
+    current_angle = 0.0
+
+    for distance, intensity in distances:
+        # 극 좌표를 직교 좌표로 변환
+        x = distance * math.cos(math.radians(current_angle))
+        y = distance * math.sin(math.radians(current_angle))
+        cartesian_points.append((x, y, intensity))
+        
+        # 각도를 증가시킵니다
+        current_angle += angle_increment
+import struct
+import math
+import RPi.GPIO as GPIO
+import time
+
+def parse_lidar_data(data):
+    # 데이터를 적절히 슬라이싱하고 파싱합니다
+    header = data[:10]  # 예시로 헤더 추출
+    payload = data[10:]  # 나머지 데이터를 페이로드로 설정
+    
+    distances = []
+    for i in range(0, len(payload), 5):  # 각 데이터는 5바이트라고 가정
+        if i + 5 <= len(payload):
+            point_data = payload[i:i+5]
+            distance, intensity = struct.unpack('<H', point_data[:2])[0], point_data[2]
+            distances.append((distance, intensity))
+    
+    return distances
+
+def convert_to_cartesian(distances):
+    cartesian_points = []
+    angle_increment = 1.0  # 각 데이터 포인트 간의 각도 증가 값 (도 단위)
+    current_angle = 0.0
+
+    for distance, intensity in distances:
+        # 극 좌표를 직교 좌표로 변환
+        x = distance * math.cos(math.radians(current_angle))
+        y = distance * math.sin(math.radians(current_angle))
+        cartesian_points.append((x, y, intensity))
+        
+        # 각도를 증가시킵니다
+        current_angle += angle_increment
+    
+    return cartesian_points
+
+def rotate_lidar(motor_pin, delay=0.17):
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(motor_pin, GPIO.OUT)
+    
+    pwm = GPIO.PWM(motor_pin, 50)  # 50Hz PWM 신호 생성
+    pwm.start(0)
+    
+    try:
+        for angle in range(0, 181, 60):  # 0도에서 180도까지 60도씩 회전
+            duty_cycle = angle / 18 + 2
+            pwm.ChangeDutyCycle(duty_cycle)
+            time.sleep(delay)
+    finally:
+        pwm.stop()
+        GPIO.cleanup()
+
+# 테스트 데이터
+raw_data = b'\x81\x0b}\x0bu\x0ba\x0bI\x0b...'  # 수신한 원시 바이트 데이터
+
+# LiDAR 데이터 파싱 및 변환
+distances = parse_lidar_data(raw_data)
+cartesian_points = convert_to_cartesian(distances)
+
+# 결과 출력
+for point in cartesian_points:
+    print(f"x: {point[0]}, y: {point[1]}, intensity: {point[2]}")
+
+# LiDAR 회전 실행
+motor_pin = 20  # 모터 제어 핀 번호
+rotate_lidar(motor_pin)
+    
+    return cartesian_points
+
+def rotate_lidar(motor_pin, delay=0.17):
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(motor_pin, GPIO.OUT)
+
+    pwm = GPIO.PWM(motor_pin, 50)  # 50Hz PWM 신호 생성
+    pwm.start(0)
+    
+    try:
+        for angle in range(0, 181, 60):  # 0도에서 180도까지 60도씩 회전
+            duty_cycle = angle / 18 + 2
+            pwm.ChangeDutyCycle(duty_cycle)
+            time.sleep(delay)
+    finally:
+        pwm.stop()
+        GPIO.cleanup()
+
+# 테스트 데이터
+raw_data = b'\x81\x0b}\x0bu\x0ba\x0bI\x0b...'  # 수신한 원시 바이트 데이터
+
+# LiDAR 데이터 파싱 및 변환
+distances = parse_lidar_data(raw_data)
+cartesian_points = convert_to_cartesian(distances)
+
+# 결과 출력
+for point in cartesian_points:
+    print(f"x: {point[0]}, y: {point[1]}, intensity: {point[2]}")
+
+# LiDAR 회전 실행
+motor_pin = 20  # 모터 제어 핀 번호
+rotate_lidar(motor_pin)
