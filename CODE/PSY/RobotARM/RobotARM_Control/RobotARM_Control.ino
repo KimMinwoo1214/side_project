@@ -25,12 +25,18 @@ void loop() {
       angle3 = input.substring(comma2 + 1).toInt();
 
       // 각도 값을 사용하여 서보 모터 움직임 예약
-      sts.RegWritePosEx(1, angle1, 1000, 0);
-      sts.RegWritePosEx(2, 4095 - angle1, 1000, 0);
+      sts.RegWritePosEx(1, angle1 - 100, 1000, 0);
+      sts.RegWritePosEx(2, 3995 - angle1, 1000, 0);
+      sts.RegWritePosEx(3, angle2-100, 1000, 0);
       delay(1000);
+      sts.RegWriteAction(); // 예약된 명령을 동시 실행
+      delay(2000);
+      sts.WritePosEx(4, angle3, 1000, 0);
+      delay(1000); // 움직임 완료 대기
+      sts.RegWritePosEx(1, angle1 + 200, 1000, 0);
+      sts.RegWritePosEx(2, 4295 - angle1, 1000, 0);
       sts.RegWritePosEx(3, angle2, 1000, 0);
-      delay(1000);
-      sts.RegWritePosEx(4, angle3, 1000, 0);
+      sts.RegWritePosEx(4, angle3 - 200, 1000, 0);
       delay(1000);
       sts.RegWriteAction(); // 예약된 명령을 동시 실행
       delay(1000); // 움직임 완료 대기
